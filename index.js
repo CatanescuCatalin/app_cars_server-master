@@ -83,6 +83,16 @@ app.get("/api/cars", async (req, res) => {
   }
 });
 
+app.get("/api/car/:id", async (req, res) => {
+    try {
+      const car = await Car.findById(req.params.id);
+      res.send(car);
+    } catch (err) {
+      console.log(err);
+      res.send("Not Found");
+    }
+  });
+
 app.get("/customers", async (req, res) => {
     try {
       const customers = await Customer.find({});

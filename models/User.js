@@ -21,6 +21,7 @@ const UserSchema = new mongoose.Schema({
     }
 });
 
+
 UserSchema.plugin(timestamp);
 
 const User = mongoose.model('Users', UserSchema);

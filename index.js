@@ -34,9 +34,11 @@ app.post("/api/create/car", async (req, res) => {
     Volume,
     Seats,
     Transmision,
-    Color,
-    ImageUrl
+    Color
   } = req.body;
+
+const ImageUrl = "/d"
+
   const car = new Car({
     Maker,
     Model,
@@ -47,6 +49,8 @@ app.post("/api/create/car", async (req, res) => {
     Color,
     ImageUrl
   });
+
+  console.log(car.id);
 
   await car.save((err, car) => {
     console.log(car.id);
@@ -84,24 +88,34 @@ app.get("/api/cars", async (req, res) => {
 });
 
 app.get("/api/car/:id", async (req, res) => {
-    try {
-      const car = await Car.findById(req.params.id);
-      res.send(car);
-    } catch (err) {
-      console.log(err);
-      res.send("Not Found");
-    }
-  });
+  try {
+    const car = await Car.findById(req.params.id);
+    res.send(car);
+  } catch (err) {
+    console.log(err);
+    res.send("Not Found");
+  }
+});
+
+app.get("/users", async (req, res) => {
+  try {
+    const user = await User.find({});
+    res.send(user);
+  } catch (err) {
+    console.log(err);
+    res.send("Not Found");
+  }
+});
 
 app.get("/customers", async (req, res) => {
-    try {
-      const customers = await Customer.find({});
-      res.send(customers);
-    } catch (err) {
-      console.log(err);
-      res.send("Not Found");
-    }
-  });
+  try {
+    const customers = await Customer.find({});
+    res.send(customers);
+  } catch (err) {
+    console.log(err);
+    res.send("Not Found");
+  }
+});
 
 app.get("/customers/:id", async (req, res) => {
   try {

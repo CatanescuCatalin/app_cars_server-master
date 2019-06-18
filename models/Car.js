@@ -41,7 +41,7 @@ const CarSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-    }
+    },
 });
 
 CarSchema.plugin(timestamp);

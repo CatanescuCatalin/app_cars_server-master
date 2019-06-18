@@ -29,6 +29,7 @@ app.post("/api/register", async (req, res) => {
 });
 
 app.post("/api/create/car", async (req, res) => {
+  console.log("trying to upload");
   const {
     Maker,
     Model,
@@ -103,7 +104,7 @@ app.post('/upload', function(req, res) {
   }
 
   Object.values(req.files).forEach(value => {
-    console.log(value);
+    console.log("upload image", value);
 
     let sampleFile = value;
 
@@ -166,6 +167,17 @@ app.get("/customers/:id", async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+});
+
+app.get("/api/image/:carId", async (req, res) => {
+  let cardId = req.params.carId;
+  images = [];
+
+  fs.readdirSync('./public/' + cardId).forEach(file => {
+    images.push(file)
+  });
+
+  res.send(images)
 });
 
 app.post("/customers", async (req, res) => {

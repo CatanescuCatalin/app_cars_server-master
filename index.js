@@ -3,8 +3,9 @@ const mongoose = require("mongoose");
 const config = require("./config");
 const bodyParser = require("body-parser");
 
-const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+var fs = require('fs');
+
+const fileUpload = require('express-fileupload');
 
 const Customer = require("./models/Customers");
 const User = require("./models/User");
@@ -13,6 +14,7 @@ const Car = require("./models/Car");
 const app = express();
 app.use(bodyParser.json());
 app.use(express.static("public"));
+app.use(fileUpload());
 
 app.post("/api/register", async (req, res) => {
   const { userName, password, email } = req.body;
@@ -35,9 +37,7 @@ app.post("/api/create/car", async (req, res) => {
     Seats,
     Transmision,
     Color
-  } = req.body;
-
-const ImageUrl = "/d"
+  } = JSON.parse(req.body.car);
 
   const car = new Car({
     Maker,
@@ -47,13 +47,37 @@ const ImageUrl = "/d"
     Seats,
     Transmision,
     Color,
-    ImageUrl
   });
 
-  console.log(car.id);
+  console.log(car)
+
+  var dir = './public/'+ car.id;
+  if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+  }
+
+  if (Object.keys(req.files).length == 0) {
+    return res.status(400).send('No files were uploaded.');
+  }
+
+  Object.values(req.files).forEach(value => {
+    console.log(value);
+
+    let sampleFile = value;
+
+    sampleFile.mv('./public/'+ car.id + '/' + sampleFile.name, function(err) {
+      if (err){
+        console.log(err)
+        return res.status(500).send(err);
+      } 
+      
+    }); 
+  });
 
   await car.save((err, car) => {
-    console.log(car.id);
+    if(err){
+      console.error(err);
+    }
   });
 
   res.sendStatus(201);
@@ -72,9 +96,27 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-app.post("/upload", upload.single("image"), (req, res) => {
-  var img = new Image(req.file);
-  console.log(img);
+app.post('/upload', function(req, res) {
+
+  if (Object.keys(req.files).length == 0) {
+    return res.status(400).send('No files were uploaded.');
+  }
+
+  Object.values(req.files).forEach(value => {
+    console.log(value);
+
+    let sampleFile = value;
+
+    sampleFile.mv('./public/'+sampleFile.name, function(err) {
+      if (err){
+        console.log(err)
+        return res.status(500).send(err);
+      } 
+      
+    }); 
+  });
+
+  res.send('File uploaded!');
 });
 
 app.get("/api/cars", async (req, res) => {

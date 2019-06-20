@@ -42,6 +42,15 @@ const CarSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
+
+    Reserved: {
+        type: Boolean,
+        default: false
+    },
+
+    ReservedUser: {
+        type: String
+    }
 });
 
 CarSchema.plugin(timestamp);

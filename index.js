@@ -122,7 +122,7 @@ app.post('/upload', function(req, res) {
 
 app.get("/api/cars", async (req, res) => {
   try {
-    const car = await Car.find({});
+    const car = await Car.find({"Reserved": false});
     res.send(car);
   } catch (err) {
     console.log(err);
@@ -196,6 +196,28 @@ app.post("/customers", async (req, res) => {
   try {
     const newCustomer = await customer.save();
     res.sendStatus(201);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.put("/api/reservCar/:id", async (req, res) => {
+  if (!req.is("application/json")) {
+    return console.error("Expects application/json");
+  }
+
+  let cardId = req.params.id;
+  let { user } = req.body
+  console.log(user)
+  let userObj = JSON.parse(user)
+  
+  try {
+    Car.findOne({ _id: cardId }, function (err, doc){
+      doc.Reserved = true;
+      doc.ReservedUser = userObj.userName;
+      doc.save();
+    });
+    res.sendStatus(200);
   } catch (error) {
     console.error(error);
   }

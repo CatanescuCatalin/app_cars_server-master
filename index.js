@@ -50,8 +50,6 @@ app.post("/api/create/car", async (req, res) => {
     Color,
   });
 
-  console.log(car)
-
   var dir = './public/'+ car.id;
   if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
@@ -62,7 +60,6 @@ app.post("/api/create/car", async (req, res) => {
   }
 
   Object.values(req.files).forEach(value => {
-    console.log(value);
 
     let sampleFile = value;
 
@@ -86,7 +83,6 @@ app.post("/api/create/car", async (req, res) => {
 
 app.post("/api/login", async (req, res) => {
   const { userName, password } = req.body;
-  console.log(req.body);
 
   const user = await User.find({ userName, password });
   if (user.length === 0) {
@@ -94,6 +90,24 @@ app.post("/api/login", async (req, res) => {
     res.json({ msg: "not found user" });
   } else {
     res.json(user);
+  }
+});
+
+app.post("/api/userinfo", async (req, res) => {
+  const { userName } = req.body;
+
+  const user = await User.find({ userName });
+  if (user.length === 0) {
+    res.status(404);
+    res.json({ msg: "not found user" });
+  } else {
+    if(user[0].ReservedCar){
+      const car = await Car.findById(user[0].ReservedCar)
+      console.log(car)
+      res.json({ user, car });
+    } else {
+      res.json({ user });
+    }
   }
 });
 
@@ -208,8 +222,16 @@ app.put("/api/reservCar/:id", async (req, res) => {
 
   let cardId = req.params.id;
   let { user } = req.body
-  console.log(user)
   let userObj = JSON.parse(user)
+
+  try {
+    User.findOne({userName: userObj.userName}, (err, doc) => {
+      doc.ReservedCar = cardId
+      doc.save()
+    });
+  } catch (error) {
+    console.log(error)
+  }
   
   try {
     Car.findOne({ _id: cardId }, function (err, doc){

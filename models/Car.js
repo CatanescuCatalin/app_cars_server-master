@@ -50,6 +50,14 @@ const CarSchema = new mongoose.Schema({
 
     ReservedUser: {
         type: String
+    },
+
+    selectedEndDate: {
+        type: String
+    },
+
+    selectedStartDate: {
+        type: String
     }
 });
 

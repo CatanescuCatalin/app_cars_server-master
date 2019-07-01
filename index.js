@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const config = require("./config");
 const bodyParser = require("body-parser");
 
-var fs = require('fs');
+const fs = require('fs');
 
 const fileUpload = require('express-fileupload');
 
@@ -144,6 +144,31 @@ app.get("/api/cars", async (req, res) => {
   }
 });
 
+app.get("/api/cars-all", async (req, res) => {
+  try {
+    const car = await Car.find({});
+    res.send(car);
+  } catch (err) {
+    console.log(err);
+    res.send("Not Found");
+  }
+});
+
+app.get("/api/free-car/:id", async (req, res) => {
+  try {
+    Car.findOne({_id: req.params.id}, (err, doc) => {
+      console.log(doc)
+      doc.Reserved = false
+      doc.ReservedUser = ""
+      doc.save()
+    });
+    res.send("Updated");
+  } catch (err) {
+    console.log(err);
+    res.send("Not Found");
+  }
+})
+
 app.get("/api/car/:id", async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
@@ -272,5 +297,5 @@ const db = mongoose.connection;
 db.on("error", err => console.log(err));
 
 db.once("open", () => {
-  console.log(`Server started on port ${config.PORT}`);
+  console.log(`DB connection open${config.PORT}`);
 });

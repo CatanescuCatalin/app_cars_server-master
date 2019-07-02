@@ -37,7 +37,10 @@ app.post("/api/create/car", async (req, res) => {
     Volume,
     Seats,
     Transmision,
-    Color
+    Color,
+    Ncoordonate,
+    Ecoordonate,
+    Price
   } = JSON.parse(req.body.car);
 
   const car = new Car({
@@ -48,6 +51,9 @@ app.post("/api/create/car", async (req, res) => {
     Seats,
     Transmision,
     Color,
+    Ncoordonate,
+    Ecoordonate,
+    Price
   });
 
   var dir = './public/'+ car.id;
@@ -103,7 +109,6 @@ app.post("/api/userinfo", async (req, res) => {
   } else {
     if(user[0].ReservedCar){
       const car = await Car.findById(user[0].ReservedCar)
-      console.log(car)
       res.json({ user, car });
     } else {
       res.json({ user });

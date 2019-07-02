@@ -58,6 +58,19 @@ const CarSchema = new mongoose.Schema({
 
     selectedStartDate: {
         type: String
+    },
+
+    Ncoordonate: {
+        type: String
+    },
+
+    Ecoordonate: {
+        type: String
+    },
+    
+    Price: {
+        type: Number,
+        default: 0
     }
 });
 

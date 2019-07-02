@@ -160,13 +160,20 @@ app.get("/api/cars-all", async (req, res) => {
 });
 
 app.get("/api/free-car/:id", async (req, res) => {
+  console.log("try to free car");
   try {
-    Car.findOne({_id: req.params.id}, (err, doc) => {
-      console.log(doc)
-      doc.Reserved = false
-      doc.ReservedUser = ""
-      doc.save()
+    const car = await Car.findOne({_id: req.params.id}, (err, doc) => {
+      doc.Reserved = false;
+      doc.ReservedUser = "";
+      doc.save();
     });
+
+    const user = await User.findOne({"userName": car.ReservedUser}, (err, doc) => {
+      doc.ReservedCar = "";
+      doc.save();
+    });
+
+
     res.send("Updated");
   } catch (err) {
     console.log(err);

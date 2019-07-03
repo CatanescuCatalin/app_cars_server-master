@@ -253,17 +253,24 @@ app.post("/customers", async (req, res) => {
 });
 
 app.put("/api/reservCar/:id", async (req, res) => {
+  console.log("Try to reserv car");
   if (!req.is("application/json")) {
     return console.error("Expects application/json");
   }
 
   let cardId = req.params.id;
-  let { user } = req.body
+  let { user, totalPrice, selectedEndDate, selectedStartDate } = req.body
   let userObj = JSON.parse(user)
+
+
+  console.log(req.body);
 
   try {
     User.findOne({userName: userObj.userName}, (err, doc) => {
-      doc.ReservedCar = cardId
+      doc.ReservedCar = cardId;
+      doc.TotalSpent += totalPrice;
+      doc.selectedEndDate = selectedEndDate;
+      doc.selectedStartDate = selectedStartDate;
       doc.save()
     });
   } catch (error) {

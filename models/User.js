@@ -22,6 +22,19 @@ const UserSchema = new mongoose.Schema({
     
     ReservedCar: {
         type: String
+    },
+
+    TotalSpent: {
+        type: Number,
+        default: 0
+    },
+
+    selectedEndDate: {
+        type: String
+    },
+
+    selectedStartDate: {
+        type: String
     }
 });
 
